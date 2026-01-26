@@ -141,7 +141,7 @@ body:not(.in-game) #clock { display:none !important; }
 /* ===== หน้าเริ่ม/นับถอยหลัง (คงเดิม) ===== */
 #startScreen{
   position:fixed; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.9); z-index:30000; text-align:center; padding:24px;
+  background:#000;   z-index:30000; text-align:center; padding:24px;
 }
 #startTitle{ font-size:clamp(26px,5vw,48px); font-weight:900; margin-bottom:10px }
 #startBtn{ margin-top:12px; padding:10px 18px; border:0; border-radius:12px; font-weight:800; cursor:pointer; background:#1f2937; color:#fff }
@@ -306,7 +306,7 @@ body.cam-on #plus2Deco{ display:none !important; }
 .plus-deco-cam{ display:none !important; }
 
 /* ตอนเปิดกล้อง โชว์เฉพาะตัวที่ถูกเลือก (active) */
-body.cam-on .plus-deco-cam.active{ display:block !important; }
+body.in-game.cam-on .plus-deco-cam.active{ display:block !important; }
 
 
 #plus1Deco{ left: var(--plus1-left); bottom: var(--plus1-bottom); width: var(--plus1-w); }
@@ -835,6 +835,17 @@ function applyRandomPlusCamSet(){
   }
 }
 
+function hideCamPlus(){
+  // ✅ ไม่ยุ่งกับ cam-on (เพราะมันคือสถานะกล้อง/ตรึงคำถาม)
+  // document.body.classList.remove('cam-on'); // ❌ เอาออก
+
+  // ถอด active ออกจาก plus cam ทุกตัว
+  for(const pair of PLUS_CAM_SETS){
+    for(const id of pair){
+      document.getElementById(id)?.classList.remove('active');
+    }
+  }
+}
 
 
 
@@ -1699,6 +1710,7 @@ restartBtn.addEventListener('click', ()=>{
 });
 
 selectLevelBtn.addEventListener('click', ()=>{
+hideCamPlus(); 
   // ✅ กัน timeout ข้อก่อนหน้าตามมายิงทีหลัง
   cancelPendingFlows();
 
@@ -1711,7 +1723,7 @@ selectLevelBtn.addEventListener('click', ()=>{
 });
 
 quickRestart.addEventListener('click', ()=>{
-  // ✅ กัน timeout ข้อก่อนหน้าตามมายิงทีหลัง
+hideCamPlus();
   cancelPendingFlows();
 
   resetState();
@@ -2272,3 +2284,4 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden && stream
 
 </body>
 </html>
+
